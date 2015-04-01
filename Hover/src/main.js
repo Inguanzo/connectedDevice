@@ -243,7 +243,10 @@ Handler.bind("/answerCall", Behavior({
 
 Handler.bind("/refreshCall", Behavior({
 	onInvoke: function(handler, message){
-		if(callVar == "now speaking"){
+		if(callingLabel.string == "call ended"){
+			myVal = "no current calls";
+		}
+		else if(callVar == "now speaking"){
 			myVal = "now speaking";
 		} 
 		else if(callBoolean == 1){
