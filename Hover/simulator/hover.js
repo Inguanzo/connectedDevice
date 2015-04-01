@@ -19,7 +19,7 @@ var waterAmount = 10;
 var THEME = require ("themes/flat/theme");
 var CONTROL = require ("mobile/control");
 var PinsSimulators = require ("PinsSimulators");
-var buttonStyle = new Style({ font:"bold 20px", color:["white","white","black"], horizontal:"center" });
+var buttonStyle = new Style({ font:"bold 20px", color:["balck","black","black"], horizontal:"center" });
 var OrientationBehavior = function(column, data) {
 	Behavior.call(this, column, data);
 }
@@ -46,17 +46,28 @@ var OrientationButton = Container.template(function($) { return {
 
 
 
+var blueSkin = new Skin( { fill:"#000066" } );
+var pinkSkin = new Skin( { fill:"#CC6666" } );
+var coffeeSkin = new Skin( { fill:"#33CCCC" } );
+var yellowSkin = new Skin( { fill:"#FFFF33" } );
+var redSkin = new Skin( { fill:"#CC0033" } );
+var whiteSkin = new Skin( { fill:"white" } );
+
+var labelStyle = new Style( { font: "bold 40px", color:"black" } );
+
+
 var OrientationLine = Container.template(function($) { return {
-	left:0, right:0, height:260,
+	left:0, right:0, height:260, skin: blueSkin,
 	contents: [
-		Label($, { left:0, right:0, top:0, height:30, style:THEME.labeledButtonStyle, string:"Touch" }),
+		new Picture({top:-40, left:60,right:10, height: 200,  url: "./titleImage.png"}),
+		
 		Container(null, {
 			left:0, right:0, top:30, height:110,
 			contents: [
-				OrientationButton({ data:$, string:"Water", value: "WATER" }, { right:40 }),
-				OrientationButton({ data:$, string:"Food", value: "FOOD"}, { left: 40 }),
-				OrientationButton({ data:$, string:"Call", value: "CALL"}, { bottom: 0 }),
-				OrientationButton({ data:$, string:"End Call", value: "END CALL"}, { bottom: 0, left: 5 }),
+				OrientationButton({ data:$, string:"Ice Cream", value: "FOOD"}, { left: 30, right: 200, skin: whiteSkin }),
+				OrientationButton({ data:$, string:"Coffee", value: "WATER" }, { left:200, right:30, skin: yellowSkin }),
+				OrientationButton({ data:$, string:"Call", value: "CALL"}, { bottom: -10, skin: redSkin }),
+				OrientationButton({ data:$, string:"End Call", value: "END CALL"}, { bottom: -50, skin:redSkin }),
 				
 			],
 		}),		

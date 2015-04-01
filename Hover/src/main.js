@@ -42,29 +42,32 @@ var fadeBehavior = Object.create(Behavior.prototype, {
 	}},
 });
 
-var whiteSkin = new Skin( { fill:"white" } );
-var labelStyle = new Style( { font: "bold 40px", color:"black" } );
+var whiteSkin = new Skin( { fill:"#000066" } );
+var labelStyle = new Style( { font: "bold 20px", color:"white" } );
 
 var counterLabel = new Label({left:60, height:10, bottom: 50, string:foodAmount, style: labelStyle, name: "foodAmountLabel"});
 var waterCounterLabel = new Label({right:60, height:10, bottom: 50, string:foodAmount, style: labelStyle, name: "waterAmountLabel"});
 
-var foodImage = new Picture({left:5, top:30, height: 170,  url: "./full.png"}),
-var waterImage = new Picture({right:5, top:30, height: 170,  url: "./full2.png"}),
+var foodImage = new Picture({left:-70, top:35, height: 130,  url: "./full.png"}),
+var waterImage = new Picture({right:-110, top:45, height: 140,  url: "./full2.png"}),
 
-var callingLabel = new Label({right:0, left:0, height:10, bottom: 10, string: "*****", style: labelStyle});
+var callingLabel = new Label({right:0, left:0, height:10, bottom: 10, string: "", style: labelStyle});
+
 
 var Screen = Container.template(function($) { return {
-	left:0, right:0, top:0, bottom:0, skin: new Skin({ fill: "blue" }),
+	left:0, right:0, top:0, bottom:0, skin: new Skin({ fill: "#000066" }),
 	contents: [
 		Content($, { name: "FOOD", anchor:"FOOD", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
 		Content($, { name: "WATER", anchor:"WATER", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
 		Content($, { name: "CALL", anchor:"CALL", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
 		Content($, { name: "END CALL", anchor:"END CALL", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
 		
+		new Picture({top:-20, left:80, height: 150,  url: "./titleImage.png"}),
+		
 		foodImage,
 		waterImage,
-		new Label({left: 23, top:2, height:80, string:"Food:", style: labelStyle}), 
-		new Label({right: 15, top:2, height:80, string:"Water:", style: labelStyle}), 
+		new Label({left: 23, top:2, height:80, string:"Ice Cream:", style: labelStyle}), 
+		new Label({right: 15, top:2, height:80, string:"Coffee:", style: labelStyle}), 
 		counterLabel,
 		waterCounterLabel,
 		callingLabel
@@ -83,6 +86,12 @@ function amountItem(item) {
 	if(item == "FOOD"){
 		if(foodAmount - 1 > -1){
 			foodAmount -= 1;
+			if(foodAmount < 8 && foodAmount > 3) {
+				foodImage.url = "./twoThirds.png";	
+			}
+			if(foodAmount < 4) {
+				foodImage.url = "./oneThird.png";	
+			}
 		}
 		trace(foodAmount);
 		counterLabel.string = foodAmount;
@@ -122,16 +131,19 @@ Handler.bind("/hoverData", {
 		}
 		
 		if(content.name == "CALL") {
-			callingLabel.string = "calling...";
-			if(callingLabel.string == "calling..."){
+			if(callBoolean == 0){
+				callingLabel.string = "calling...";
 				callBoolean = 1;
 			}		
 		}
 		
 		if(content.name == "END CALL") {
-			callingLabel.string = "call ended";
-			callBoolean = 0;
-			recentEnd = 1;
+			if(callBoolean == 1){
+				callingLabel.string = "call ended";
+				callBoolean = 0;
+			} else {
+				callingLabel.string = "";				
+			}
 		}
 		
 		content.state = 1;
@@ -210,6 +222,7 @@ Handler.bind("/answerCall", Behavior({
 		if(callBoolean == 0){
 			callVar = "no current calls";
 		} else {
+			callingLabel.string = "now speaking";
 			callVar = "now speaking";
 		}
 		message.responseText = JSON.stringify( { answerResponse: callVar } );
@@ -220,14 +233,16 @@ Handler.bind("/answerCall", Behavior({
 
 Handler.bind("/refreshCall", Behavior({
 	onInvoke: function(handler, message){
-		if(callBoolean == 1 && callVar == "now speaking"){
+		if(callVar == "now speaking"){
 			myVal = "now speaking";
 		} 
-		if(callingLabel.string == "calling..." && callVar != "now speaking"){
-			myVal = "you pet is calling";
-		}
 		else {
-			myVal = "no current calls";
+			if(callBoolean == 1){
+			myVal = "Stitch is calling";
+			}
+			else {
+				myVal = "no current calls";
+			}
 		}
 		message.responseText = JSON.stringify( { value: myVal } );
 		message.status = 200;
