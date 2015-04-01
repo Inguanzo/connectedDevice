@@ -4,10 +4,22 @@ var BUTTONS = require("controls/buttons");
 
 deviceURL = "";
 
+var blueSkin = new Skin( { fill:"#000066" } );
+var pinkSkin = new Skin( { fill:"#CC6666" } );
+var coffeeSkin = new Skin( { fill:"#33CCCC" } );
+var yellowSkin = new Skin( { fill:"#FFFF33" } );
+var redSkin = new Skin( { fill:"#CC0033" } );
 var whiteSkin = new Skin( { fill:"white" } );
-var labelStyle = new Style( { font: "bold 15px", color:"black" } );
-var callStyle = new Style( { font: "bold 25px", color:"black" } );
-var smallCallStyle = new Style( { font: "bold 15px", color:"black" } );
+
+
+var labelStyle = new Style( { font: "bold 20px", color:"black" } );
+var smallLabelStyle = new Style( { font: "bold 15px", color:"black" } );
+var foodLabelStyle = new Style( { font: "bold 20px", color:"white" } );
+var foodSmallLabelStyle = new Style( { font: "bold 15px", color:"white" } );
+
+
+var callStyle = new Style( { font: "bold 25px", color:"white" } );
+var smallCallStyle = new Style( { font: "bold 15px", color:"white" } );
 
 
 Handler.bind("/discover", Behavior({
@@ -26,14 +38,14 @@ Handler.bind("/forget", Behavior({
 	}
 }));
 
-var foodCounterLabel = new Label({left:75, top:-40, height:40, string:"null", style: labelStyle});
-var waterCounterLabel = new Label({right:30, top:-40, height:40, string:"null", style: labelStyle});
+var foodCounterLabel = new Label({left:80, top:-50, height:40, string:"", style: foodSmallLabelStyle});
+var waterCounterLabel = new Label({right:30, top:-60, height:40, string:"", style: foodSmallLabelStyle});
 
 
 var RefillFoodButton = BUTTONS.Button.template(function($){ return{
-	left: 5, right: 250, top:0, height:30,
+	left: 5, right: 250, top:0, height:30, skin: whiteSkin,
 	contents: [
-		new Label({left:0, right:0, height:60, string:"Refill", style: labelStyle})
+		new Label({left:0, right:0, height:60, string:"Refill", style: smallLabelStyle})
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
@@ -46,9 +58,9 @@ var RefillFoodButton = BUTTONS.Button.template(function($){ return{
 }});
 
 var RefreshFoodButton = BUTTONS.Button.template(function($){ return{
-	left: 75, right: 180, top: -30, height:30,
+	left: 75, right: 180, top: -30, height:30, skin: whiteSkin,
 	contents: [
-		new Label({left:0, right:0, height:60, string:"Refresh", style: labelStyle})
+		new Label({left:0, right:0, height:60, string:"Refresh", style: smallLabelStyle})
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
@@ -61,9 +73,9 @@ var RefreshFoodButton = BUTTONS.Button.template(function($){ return{
 }});
 
 var RefillWaterButton = BUTTONS.Button.template(function($){ return{
-	right: 70, left: 190, top: -30, height:30,
+	right: 70, left: 190, top: -30, height:30, skin: yellowSkin,
 	contents: [
-		new Label({left:0, right:0, height:60, string:"Refill", style: labelStyle})
+		new Label({left:0, right:0, height:60, string:"Refill", style: smallLabelStyle})
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
@@ -76,9 +88,9 @@ var RefillWaterButton = BUTTONS.Button.template(function($){ return{
 }});
 
 var RefreshWaterButton = BUTTONS.Button.template(function($){ return{
-	right: 5, left: 255, top: -30, height:30,
+	right: 5, left: 255, top: -30, height:30,skin: yellowSkin,
 	contents: [
-		new Label({left:0, right:0, height:60, string:"Refresh", style: labelStyle})
+		new Label({left:0, right:0, height:60, string:"Refresh", style: smallLabelStyle})
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
@@ -92,10 +104,10 @@ var RefreshWaterButton = BUTTONS.Button.template(function($){ return{
 
 //var timeVar = new Label({left: 0, right: 0, height: 70, string: "Loading...", style: labelStyle});
 var callVar = new Label({left: 5, height: 70, top: 50, string: "incoming calls:", style: callStyle});
-var callResponseLabel = new Label({left: 5, height: 70, top: -40, string: "*****", style: smallCallStyle});
+var callResponseLabel = new Label({left: 5, height: 70, top: -40, string: "no current calls", style: smallCallStyle});
 
 var AnswerCallButton = BUTTONS.Button.template(function($){ return{
-	right: 5, left: 200, top:-50, height:30,
+	right: 5, left: 200, top:-50, height:30, skin: redSkin,
 	contents: [
 		new Label({left:0, right:0, height:60, string:"Answer", style: labelStyle})
 	],
@@ -109,7 +121,7 @@ var AnswerCallButton = BUTTONS.Button.template(function($){ return{
 	})
 }});
 var RefreshCallButton = BUTTONS.Button.template(function($){ return{
-	right: 5, left: 200, top:10, height:30,
+	right: 5, left: 200, top:10, height:30, skin: redSkin,
 	contents: [
 		new Label({left:0, right:0, height:60, string:"Refresh", style: labelStyle})
 	],
@@ -123,7 +135,7 @@ var RefreshCallButton = BUTTONS.Button.template(function($){ return{
 	})
 }});
 var EndCallButton = BUTTONS.Button.template(function($){ return{
-	right: 5, left: 200, top:10, height:30,
+	right: 5, left: 200, top:10, height:30, skin: redSkin,
 	contents: [
 		new Label({left:0, right:0, height:60, string:"End Call", style: labelStyle})
 	],
@@ -153,13 +165,20 @@ var ResetWaterButton = BUTTONS.Button.template(function($){ return{
 	})
 }});
 */
+var titleImage = new Picture({left:-50, top:-100, url: "./titleImage.png"}),
+
 
 var mainColumn = new Column({
-	left: 0, right: 0, top: 0, bottom: 0, active: false, skin: whiteSkin,
+	left: 0, right: 0, top: 0, bottom: 0, active: false, skin: blueSkin,
 	contents: [
-		new Label({left:10, height:40, top:10, string:"Food:", style: labelStyle}),
-	 	new Label({right:70, height:40, top: -40, string:"Water:", style: labelStyle}),
-		foodCounterLabel,
+		titleImage,
+		//new Label({left:10, height:40, top:-220, string:"Ice Cream:", style: foodLabelStyle}),
+		new Picture({left:-110, height:40, top:-240, height: 100,  url: "./full.png"}),
+		
+	 	//new Label({right:70, height:40, top: -40, string:"Coffee:", style: foodLabelStyle}),
+		foodCounterLabel,			 	
+		new Picture({right:-70, top: -70, height:100, url: "./fullCoffee.png"}),
+		
 		waterCounterLabel,
 		new RefillFoodButton(),
 		new RefreshFoodButton(),
