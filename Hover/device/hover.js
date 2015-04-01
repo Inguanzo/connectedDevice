@@ -58,6 +58,8 @@ exports.read = function() {
         if (touchEvent > 0) {
             switch (touchEvent) {
                 case  2: result = "WATER"; break;
+                case 4: result = "CALL"; break
+                case 8: result = "END CALL"; break
                 case 16: result = "FOOD"; break;
                 default: result = "mystery touch 0x" + busData[14].toString(16) + ", 0x" + busData[15].toString(16); break;
             }

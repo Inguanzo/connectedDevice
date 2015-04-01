@@ -55,6 +55,9 @@ var OrientationLine = Container.template(function($) { return {
 			contents: [
 				OrientationButton({ data:$, string:"Water", value: "WATER" }, { right:40 }),
 				OrientationButton({ data:$, string:"Food", value: "FOOD"}, { left: 40 }),
+				OrientationButton({ data:$, string:"Call", value: "CALL"}, { bottom: 0 }),
+				OrientationButton({ data:$, string:"End Call", value: "END CALL"}, { bottom: 0, left: 5 }),
+				
 			],
 		}),		
 	],

@@ -17,6 +17,7 @@
 
 var foodAmount = 10;
 var waterAmount = 10;
+var callBoolean = 0;
 
 var fullTexture = new Texture("./full.png");
 var fullSkin = new Skin({ texture: fullTexture, x:0, y:0, width:200, height:200, variants:200, states:200 } );
@@ -50,18 +51,23 @@ var waterCounterLabel = new Label({right:60, height:10, bottom: 50, string:foodA
 var foodImage = new Picture({left:5, top:30, height: 170,  url: "./full.png"}),
 var waterImage = new Picture({right:5, top:30, height: 170,  url: "./full2.png"}),
 
+var callingLabel = new Label({right:0, left:0, height:10, bottom: 10, string: "*****", style: labelStyle});
 
 var Screen = Container.template(function($) { return {
 	left:0, right:0, top:0, bottom:0, skin: new Skin({ fill: "blue" }),
 	contents: [
 		Content($, { name: "FOOD", anchor:"FOOD", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
 		Content($, { name: "WATER", anchor:"WATER", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
+		Content($, { name: "CALL", anchor:"CALL", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
+		Content($, { name: "END CALL", anchor:"END CALL", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
+		
 		foodImage,
 		waterImage,
 		new Label({left: 23, top:2, height:80, string:"Food:", style: labelStyle}), 
 		new Label({right: 15, top:2, height:80, string:"Water:", style: labelStyle}), 
 		counterLabel,
 		waterCounterLabel,
+		callingLabel
 	]
 }});
 
@@ -113,6 +119,19 @@ Handler.bind("/hoverData", {
 		if(content.name == "WATER" && waterAmount < 1) {
 			waterImage.url = "./empty2.png";
 			waterCounterLabel.string = "empty";			
+		}
+		
+		if(content.name == "CALL") {
+			callingLabel.string = "calling...";
+			if(callingLabel.string == "calling..."){
+				callBoolean = 1;
+			}		
+		}
+		
+		if(content.name == "END CALL") {
+			callingLabel.string = "call ended";
+			callBoolean = 0;
+			recentEnd = 1;
 		}
 		
 		content.state = 1;
@@ -177,6 +196,58 @@ Handler.bind("/waterRefresh", Behavior({
 	}
 }));
 
+Handler.bind("/check", Behavior({
+	onInvoke: function(handler, message){
+		message.responseText = JSON.stringify( { respondCheck: "empty" } );
+		message.status = 200;
+	}
+}));
+
+var callVar = "";
+
+Handler.bind("/answerCall", Behavior({
+	onInvoke: function(handler, message){
+		if(callBoolean == 0){
+			callVar = "no current calls";
+		} else {
+			callVar = "now speaking";
+		}
+		message.responseText = JSON.stringify( { answerResponse: callVar } );
+		message.status = 200;
+	}
+}));
+
+
+Handler.bind("/refreshCall", Behavior({
+	onInvoke: function(handler, message){
+		if(callBoolean == 1 && callVar == "now speaking"){
+			myVal = "now speaking";
+		} 
+		if(callingLabel.string == "calling..." && callVar != "now speaking"){
+			myVal = "you pet is calling";
+		}
+		else {
+			myVal = "no current calls";
+		}
+		message.responseText = JSON.stringify( { value: myVal } );
+		message.status = 200;
+	}
+}));
+
+Handler.bind("/endCall", Behavior({
+	onInvoke: function(handler, message){
+		callVar = "";
+		if(callBoolean == 1) {
+			newValue = "call ended";
+		} else {
+			newValue = "no current calls";
+		}
+		callBoolean = 0;
+		callingLabel.string = "";
+		message.responseText = JSON.stringify( { endVal: newValue } );
+		message.status = 200;
+	}
+}));
 
 var model = application.behavior = Object.create(Object.prototype, {
 	onComplete: { value: function(application, message, text) {
