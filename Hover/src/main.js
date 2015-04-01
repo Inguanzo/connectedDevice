@@ -44,22 +44,22 @@ var fadeBehavior = Object.create(Behavior.prototype, {
 var whiteSkin = new Skin( { fill:"white" } );
 var labelStyle = new Style( { font: "bold 40px", color:"black" } );
 
-var counterLabel = new Label({right:60, height:10, bottom: 50, string:foodAmount, style: labelStyle, name: "foodAmountLabel"});
-var waterCounterLabel = new Label({left:60, height:10, bottom: 50, string:foodAmount, style: labelStyle, name: "waterAmountLabel"});
+var counterLabel = new Label({left:60, height:10, bottom: 50, string:foodAmount, style: labelStyle, name: "foodAmountLabel"});
+var waterCounterLabel = new Label({right:60, height:10, bottom: 50, string:foodAmount, style: labelStyle, name: "waterAmountLabel"});
 
-var foodImage = new Picture({right:5, top:30, height: 170,  url: "./full.png"}),
-var waterImage = new Picture({left:5, top:30, height: 170,  url: "./full2.png"}),
+var foodImage = new Picture({left:5, top:30, height: 170,  url: "./full.png"}),
+var waterImage = new Picture({right:5, top:30, height: 170,  url: "./full2.png"}),
 
 
 var Screen = Container.template(function($) { return {
 	left:0, right:0, top:0, bottom:0, skin: new Skin({ fill: "blue" }),
 	contents: [
-		Content($, { name: "WATER", anchor:"WATER", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
 		Content($, { name: "FOOD", anchor:"FOOD", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
+		Content($, { name: "WATER", anchor:"WATER", behavior:fadeBehavior,left:10, top: 50, variant: 0 }),
 		foodImage,
 		waterImage,
-		new Label({right: 23, top:2, height:80, string:"Food:", style: labelStyle}), 
-		new Label({left: 15, top:2, height:80, string:"Water:", style: labelStyle}), 
+		new Label({left: 23, top:2, height:80, string:"Food:", style: labelStyle}), 
+		new Label({right: 15, top:2, height:80, string:"Water:", style: labelStyle}), 
 		counterLabel,
 		waterCounterLabel,
 	]
@@ -124,38 +124,55 @@ Handler.bind("/hoverData", {
 
 Handler.bind("/getCount", Behavior({
 	onInvoke: function(handler, message){
-		if(foodAmount < 10) {
-			foodAmount = 10;
-		}
+		trace("++++++++++inside device");
+		count = "5";
+		counterLabel.string = foodAmount;
 		message.responseText = JSON.stringify( { count: count } );
 		message.status = 200;
-		foodAmount = count + foodAmount;
-		counterLabel.string = foodAmount;
-		
-		trace("amount: " + foodAmount + "\n");
-		trace("count******" + count + "\n");
-		
 	}
 }));
 
-Handler.bind("/reset", Behavior({
+Handler.bind("/foodRefill", Behavior({
 	onInvoke: function(handler, message){
-		foodAmount = 10;
 		foodImage.url = "./full.png";	
-		count = 0;
-		counterLabel.string = "10";
-		message.responseText = JSON.stringify( { count: "10" } );
+		foodAmount = 10;
+		counterLabel.string = foodAmount;
+		message.responseText = JSON.stringify( { val: foodAmount } );
 		message.status = 200;
 	}
 }));
 
-Handler.bind("/resetWater", Behavior({
+Handler.bind("/foodRefresh", Behavior({
 	onInvoke: function(handler, message){
-		waterAmount = 10;
+		if(foodAmount == 0){
+			foodVar = "empty"
+		} else {
+			foodVar = foodAmount
+		}
+		message.responseText = JSON.stringify( { foodCount: foodVar } );
+		message.status = 200;
+	}
+}));
+
+Handler.bind("/waterRefill", Behavior({
+	onInvoke: function(handler, message){
 		waterImage.url = "./full2.png";	
-		//count = 0;
-		waterCounterLabel.string = "10";
-		message.responseText = JSON.stringify( { count: "10" } );
+		waterAmount = 10;
+		waterCounterLabel.string = waterAmount;
+		message.responseText = JSON.stringify( { waterRefillVal: waterAmount } );
+		message.status = 200;
+	}
+}));
+
+Handler.bind("/waterRefresh", Behavior({
+	onInvoke: function(handler, message){
+		if(waterAmount == 0){
+			waterVar = "empty"
+		} else {
+			waterVar = waterAmount
+		}
+	
+		message.responseText = JSON.stringify( { waterRefreshVal: waterVar } );
 		message.status = 200;
 	}
 }));
