@@ -139,6 +139,9 @@ var AnswerCallButton = BUTTONS.Button.template(function($){ return{
 		}},
 		onComplete: { value: function(content, message, json){
 			callResponseLabel.string = json.answerResponse;
+			if(callResponseLabel.string == "now speaking"){
+				stitch.url = "./stitch.png";
+			}
 		}}
 	})
 }});
@@ -153,6 +156,9 @@ var RefreshCallButton = BUTTONS.Button.template(function($){ return{
 		}},
 		onComplete: { value: function(content, message, json){
 			callResponseLabel.string = json.value;
+			if(callResponseLabel.string == "now speaking" || callResponseLabel.string == "Stitch is calling"){
+				stitch.url = "./stitch.png";
+			}
 		}}
 	})
 }});
@@ -167,6 +173,7 @@ var EndCallButton = BUTTONS.Button.template(function($){ return{
 		}},
 		onComplete: { value: function(content, message, json){
 			callResponseLabel.string = json.endVal;
+			stitch.url = "";
 		}}
 	})
 }});
@@ -182,6 +189,7 @@ var MakeCallButton = BUTTONS.Button.template(function($){ return{
 		}},
 		onComplete: { value: function(content, message, json){
 			callResponseLabel.string = json.stitchResponse;
+			stitch.url = "./stitch.png";
 		}}
 	})
 }});
@@ -189,6 +197,8 @@ var MakeCallButton = BUTTONS.Button.template(function($){ return{
 var titleImage = new Picture({left:-50, top:-100, url: "./titleImage.png"}),
 var iceCream = new Picture({left:-110, height:40, top:-240, height: 100,  url: "./full.png"}),
 var coffee = new Picture({right:-70, top: -70, height:100, url: "./fullCup.png"}),
+
+var stitch = new Picture({left:-10, top:-110, height:70, active: false, url: ""}),
 
 
 var mainColumn = new Column({
@@ -211,6 +221,7 @@ var mainColumn = new Column({
 		callResponseLabel,
 		new EndCallButton(),
 		new MakeCallButton(),
+		stitch,
 		//timeVar,
 	],
 	behavior: Behavior({
@@ -232,8 +243,8 @@ var ApplicationBehavior = Behavior.template({
 	},
 })
 
-/*
-Handler.bind("/getTime", {
+
+/*Handler.bind("/getTime", {
     onInvoke: function(handler, message){
         handler.invoke(new Message(deviceURL + "getCount"), Message.JSON);
     },
@@ -250,8 +261,8 @@ Handler.bind("/delay", {
     onComplete: function(handler, message){
         handler.invoke(new Message("/getTime"));
     }
-});
-*/
+});*/
+
 
 application.behavior = new ApplicationBehavior();
 application.add(mainColumn);
