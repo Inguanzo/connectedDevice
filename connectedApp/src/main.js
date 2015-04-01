@@ -6,6 +6,8 @@ deviceURL = "";
 
 var whiteSkin = new Skin( { fill:"white" } );
 var labelStyle = new Style( { font: "bold 15px", color:"black" } );
+var callStyle = new Style( { font: "bold 25px", color:"black" } );
+var smallCallStyle = new Style( { font: "bold 15px", color:"black" } );
 
 
 Handler.bind("/discover", Behavior({
@@ -88,6 +90,53 @@ var RefreshWaterButton = BUTTONS.Button.template(function($){ return{
 	})
 }});
 
+//var timeVar = new Label({left: 0, right: 0, height: 70, string: "Loading...", style: labelStyle});
+var callVar = new Label({left: 5, height: 70, top: 50, string: "incoming calls:", style: callStyle});
+var callResponseLabel = new Label({left: 5, height: 70, top: -40, string: "*****", style: smallCallStyle});
+
+var AnswerCallButton = BUTTONS.Button.template(function($){ return{
+	right: 5, left: 200, top:-50, height:30,
+	contents: [
+		new Label({left:0, right:0, height:60, string:"Answer", style: labelStyle})
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			content.invoke(new Message(deviceURL + "answerCall"), Message.JSON);
+		}},
+		onComplete: { value: function(content, message, json){
+			callResponseLabel.string = json.answerResponse;
+		}}
+	})
+}});
+var RefreshCallButton = BUTTONS.Button.template(function($){ return{
+	right: 5, left: 200, top:10, height:30,
+	contents: [
+		new Label({left:0, right:0, height:60, string:"Refresh", style: labelStyle})
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			content.invoke(new Message(deviceURL + "refreshCall"), Message.JSON);
+		}},
+		onComplete: { value: function(content, message, json){
+			callResponseLabel.string = json.value;
+		}}
+	})
+}});
+var EndCallButton = BUTTONS.Button.template(function($){ return{
+	right: 5, left: 200, top:10, height:30,
+	contents: [
+		new Label({left:0, right:0, height:60, string:"End Call", style: labelStyle})
+	],
+	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
+		onTap: { value: function(content){
+			content.invoke(new Message(deviceURL + "endCall"), Message.JSON);
+		}},
+		onComplete: { value: function(content, message, json){
+			callResponseLabel.string = json.endVal;
+		}}
+	})
+}});
+
 /*
 var ResetWaterButton = BUTTONS.Button.template(function($){ return{
 	left: 80, right: 80, height:60, bottom: 20,
@@ -104,6 +153,7 @@ var ResetWaterButton = BUTTONS.Button.template(function($){ return{
 	})
 }});
 */
+
 var mainColumn = new Column({
 	left: 0, right: 0, top: 0, bottom: 0, active: false, skin: whiteSkin,
 	contents: [
@@ -115,6 +165,13 @@ var mainColumn = new Column({
 		new RefreshFoodButton(),
 		new RefillWaterButton(),
 		new RefreshWaterButton(),
+		callVar,
+		new AnswerCallButton(),
+		new RefreshCallButton(),
+		callResponseLabel,
+		new EndCallButton(),
+		
+		//timeVar,
 	],
 	behavior: Behavior({
 		onTouchEnded: function(content){
@@ -135,14 +192,13 @@ var ApplicationBehavior = Behavior.template({
 	},
 })
 
-/*
+
 Handler.bind("/getTime", {
     onInvoke: function(handler, message){
-        handler.invoke(new Message(deviceURL + "/getCount"), Message.JSON);
+        handler.invoke(new Message(deviceURL + "check"), Message.JSON);
     },
     onComplete: function(handler, message, json){
-         //mainColumn.timeLabel.string = json.time;
-         trace("******inside app");
+         //var newvar = json.respondCheck;
          handler.invoke( new Message("/delay"));
     }
 });
@@ -155,7 +211,7 @@ Handler.bind("/delay", {
         handler.invoke(new Message("/getTime"));
     }
 });
-*/
+
 application.behavior = new ApplicationBehavior();
+application.invoke(new Message("/getTime"));
 application.add(mainColumn);
-//application.invoke(new Message("/getTime"));
