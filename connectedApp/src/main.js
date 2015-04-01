@@ -53,6 +53,7 @@ var RefillFoodButton = BUTTONS.Button.template(function($){ return{
 		}},
 		onComplete: { value: function(content, message, json){
 			foodCounterLabel.string = json.val;
+			iceCream.url = "./full.png";
 		}}
 	})
 }});
@@ -68,7 +69,16 @@ var RefreshFoodButton = BUTTONS.Button.template(function($){ return{
 		}},
 		onComplete: { value: function(content, message, json){
 			foodCounterLabel.string = json.foodCount;
-		}}
+			if(json.foodCount < 8 && json.foodCount > 3) {
+				iceCream.url = "./twoThirds.png";	
+			}
+			if(json.foodCount < 4 && json.foodCount > 0) {
+				iceCream.url = "./oneThird.png";	
+			}		
+			if(json.foodCount < 1 || json.foodCount == "empty"){
+				iceCream.url = "./empty.png"
+			}
+			}}
 	})
 }});
 
@@ -83,6 +93,7 @@ var RefillWaterButton = BUTTONS.Button.template(function($){ return{
 		}},
 		onComplete: { value: function(content, message, json){
 			waterCounterLabel.string = json.waterRefillVal;
+			coffee.url = "./fullCup.png";
 		}}
 	})
 }});
@@ -98,6 +109,16 @@ var RefreshWaterButton = BUTTONS.Button.template(function($){ return{
 		}},
 		onComplete: { value: function(content, message, json){
 			waterCounterLabel.string = json.waterRefreshVal;
+			if(json.waterRefreshVal < 8 && json.waterRefreshVal > 3) {
+				coffee.url = "./twoThirdsCup.png";	
+			}
+			if(json.waterRefreshVal < 4 && json.waterRefreshVal > 0) {
+				coffee.url = "./oneThirdCup.png";	
+			}		
+			if(json.waterRefreshVal < 1 || json.waterRefreshVal == "empty"){
+				coffee.url = "./emptyCup.png"
+			}
+			
 		}}
 	})
 }});
@@ -166,6 +187,8 @@ var ResetWaterButton = BUTTONS.Button.template(function($){ return{
 }});
 */
 var titleImage = new Picture({left:-50, top:-100, url: "./titleImage.png"}),
+var iceCream = new Picture({left:-110, height:40, top:-240, height: 100,  url: "./full.png"}),
+var coffee = new Picture({right:-70, top: -70, height:100, url: "./fullCup.png"}),
 
 
 var mainColumn = new Column({
@@ -173,12 +196,10 @@ var mainColumn = new Column({
 	contents: [
 		titleImage,
 		//new Label({left:10, height:40, top:-220, string:"Ice Cream:", style: foodLabelStyle}),
-		new Picture({left:-110, height:40, top:-240, height: 100,  url: "./full.png"}),
-		
+		iceCream,
 	 	//new Label({right:70, height:40, top: -40, string:"Coffee:", style: foodLabelStyle}),
 		foodCounterLabel,			 	
-		new Picture({right:-70, top: -70, height:100, url: "./fullCoffee.png"}),
-		
+		coffee,		
 		waterCounterLabel,
 		new RefillFoodButton(),
 		new RefreshFoodButton(),
