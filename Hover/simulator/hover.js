@@ -19,7 +19,7 @@ var waterAmount = 10;
 var THEME = require ("themes/flat/theme");
 var CONTROL = require ("mobile/control");
 var PinsSimulators = require ("PinsSimulators");
-var buttonStyle = new Style({ font:"bold 20px", color:["balck","black","black"], horizontal:"center" });
+var buttonStyle = new Style({ font:"bold 20px", color:["black","black","black"], horizontal:"center" });
 var OrientationBehavior = function(column, data) {
 	Behavior.call(this, column, data);
 }
