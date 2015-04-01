@@ -49,7 +49,7 @@ var counterLabel = new Label({left:60, height:10, bottom: 50, string:foodAmount,
 var waterCounterLabel = new Label({right:60, height:10, bottom: 50, string:foodAmount, style: labelStyle, name: "waterAmountLabel"});
 
 var foodImage = new Picture({left:-70, top:35, height: 130,  url: "./full.png"}),
-var waterImage = new Picture({right:-110, top:45, height: 140,  url: "./full2.png"}),
+var waterImage = new Picture({right:-110, top:45, height: 140,  url: "./fullCup.png"}),
 
 var callingLabel = new Label({right:0, left:0, height:10, bottom: 10, string: "", style: labelStyle});
 
@@ -99,6 +99,12 @@ function amountItem(item) {
 	if(item == "WATER"){
 		if(waterAmount - 1 > -1){
 			waterAmount -= 1;
+		if(waterAmount < 8 && waterAmount > 3) {
+				waterImage.url = "./twoThirdsCup.png";	
+			}
+			if(waterAmount < 4) {
+				waterImage.url = "./oneThirdCup.png";	
+			}
 		}
 		trace(waterAmount);
 		waterCounterLabel.string = waterAmount;
@@ -113,12 +119,15 @@ Handler.bind("/respond", Behavior({
 	}
 }));
 
+var ended = 0;
+
 Handler.bind("/hoverData", {
 	onInvoke: function(handler, message) {
 	
 		var data = model.data;
 		var it = message.requestObject;
 		var content = data[it];
+		ended = 0;
 		
 		amountItem(content.name);
 		if(content.name == "FOOD" && foodAmount < 1) {
@@ -126,7 +135,7 @@ Handler.bind("/hoverData", {
 			counterLabel.string = "empty";			
 		}
 		if(content.name == "WATER" && waterAmount < 1) {
-			waterImage.url = "./empty2.png";
+			waterImage.url = "./emptyCup.png";
 			waterCounterLabel.string = "empty";			
 		}
 		
@@ -143,7 +152,8 @@ Handler.bind("/hoverData", {
 				callBoolean = 0;
 			} else {
 				callingLabel.string = "";				
-			}
+			} 
+			ended = 1;
 		}
 		
 		content.state = 1;
@@ -187,7 +197,7 @@ Handler.bind("/foodRefresh", Behavior({
 
 Handler.bind("/waterRefill", Behavior({
 	onInvoke: function(handler, message){
-		waterImage.url = "./full2.png";	
+		waterImage.url = "./fullCup.png";	
 		waterAmount = 10;
 		waterCounterLabel.string = waterAmount;
 		message.responseText = JSON.stringify( { waterRefillVal: waterAmount } );
@@ -236,13 +246,11 @@ Handler.bind("/refreshCall", Behavior({
 		if(callVar == "now speaking"){
 			myVal = "now speaking";
 		} 
-		else {
-			if(callBoolean == 1){
+		else if(callBoolean == 1){
 			myVal = "Stitch is calling";
-			}
-			else {
-				myVal = "no current calls";
-			}
+		}
+		else {
+			myVal = "no current calls";
 		}
 		message.responseText = JSON.stringify( { value: myVal } );
 		message.status = 200;
