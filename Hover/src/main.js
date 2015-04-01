@@ -128,6 +128,7 @@ Handler.bind("/hoverData", {
 		var it = message.requestObject;
 		var content = data[it];
 		ended = 0;
+		calling = 0;
 		
 		amountItem(content.name);
 		if(content.name == "FOOD" && foodAmount < 1) {
@@ -165,10 +166,8 @@ Handler.bind("/hoverData", {
 
 Handler.bind("/getCount", Behavior({
 	onInvoke: function(handler, message){
-		trace("++++++++++inside device");
-		count = "5";
-		counterLabel.string = foodAmount;
-		message.responseText = JSON.stringify( { count: count } );
+		myCount = foodAmount;
+		message.responseText = JSON.stringify( { foodVariable: myCount } );
 		message.status = 200;
 	}
 }));
@@ -249,7 +248,7 @@ Handler.bind("/refreshCall", Behavior({
 		else if(callVar == "now speaking"){
 			myVal = "now speaking";
 		} 
-		else if(callBoolean == 1){
+		else if(callBoolean == 1 && callingLabel.string == "calling..."){
 			myVal = "Stitch is calling";
 		}
 		else {
@@ -271,6 +270,17 @@ Handler.bind("/endCall", Behavior({
 		callBoolean = 0;
 		callingLabel.string = "";
 		message.responseText = JSON.stringify( { endVal: newValue } );
+		message.status = 200;
+	}
+}));
+
+Handler.bind("/callStitch", Behavior({
+	onInvoke: function(handler, message){
+		callBoolean = 1;
+		callingLabel.string = "now speaking";
+		callVar = "now speaking";
+		recievedCall = "now speaking"
+		message.responseText = JSON.stringify( { stitchResponse : recievedCall} );
 		message.status = 200;
 	}
 }));
