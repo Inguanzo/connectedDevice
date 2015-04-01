@@ -10,6 +10,7 @@ var coffeeSkin = new Skin( { fill:"#33CCCC" } );
 var yellowSkin = new Skin( { fill:"#FFFF33" } );
 var redSkin = new Skin( { fill:"#CC0033" } );
 var whiteSkin = new Skin( { fill:"white" } );
+var greenSkin = new Skin( { fill:"green" } );
 
 
 var labelStyle = new Style( { font: "bold 20px", color:"black" } );
@@ -170,22 +171,21 @@ var EndCallButton = BUTTONS.Button.template(function($){ return{
 	})
 }});
 
-/*
-var ResetWaterButton = BUTTONS.Button.template(function($){ return{
-	left: 80, right: 80, height:60, bottom: 20,
+var MakeCallButton = BUTTONS.Button.template(function($){ return{
+	right: 160, left: 5, top:-30, height:30, skin: greenSkin,
 	contents: [
-		new Label({left:0, right:0, height:60, string:"Refill", style: labelStyle})
+		new Label({left:10, right:0, height:60, string:"Call Stitch", style: labelStyle})
 	],
 	behavior: Object.create(BUTTONS.ButtonBehavior.prototype, {
 		onTap: { value: function(content){
-			content.invoke(new Message(deviceURL + "resetWater"), Message.JSON);
+			content.invoke(new Message(deviceURL + "callStitch"), Message.JSON);
 		}},
 		onComplete: { value: function(content, message, json){
-			//foodCounterLabel.string = json.count;
+			callResponseLabel.string = json.stitchResponse;
 		}}
 	})
 }});
-*/
+
 var titleImage = new Picture({left:-50, top:-100, url: "./titleImage.png"}),
 var iceCream = new Picture({left:-110, height:40, top:-240, height: 100,  url: "./full.png"}),
 var coffee = new Picture({right:-70, top: -70, height:100, url: "./fullCup.png"}),
@@ -210,7 +210,7 @@ var mainColumn = new Column({
 		new RefreshCallButton(),
 		callResponseLabel,
 		new EndCallButton(),
-		
+		new MakeCallButton(),
 		//timeVar,
 	],
 	behavior: Behavior({
@@ -232,13 +232,13 @@ var ApplicationBehavior = Behavior.template({
 	},
 })
 
-
+/*
 Handler.bind("/getTime", {
     onInvoke: function(handler, message){
-        handler.invoke(new Message(deviceURL + "check"), Message.JSON);
+        handler.invoke(new Message(deviceURL + "getCount"), Message.JSON);
     },
     onComplete: function(handler, message, json){
-         //var newvar = json.respondCheck;
+         foodCounterLabel.string = json.foodVariable;
          handler.invoke( new Message("/delay"));
     }
 });
@@ -251,7 +251,8 @@ Handler.bind("/delay", {
         handler.invoke(new Message("/getTime"));
     }
 });
+*/
 
 application.behavior = new ApplicationBehavior();
-application.invoke(new Message("/getTime"));
 application.add(mainColumn);
+application.invoke(new Message("/getTime"));
