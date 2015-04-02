@@ -249,7 +249,6 @@ Handler.bind("/refreshCall", Behavior({
 		if(callingLabel.string == "call ended"){
 			myVal = "no current calls";
 			lilo.url = "";
-			
 		}
 		else if(callVar == "now speaking"){
 			myVal = "now speaking";
@@ -261,6 +260,7 @@ Handler.bind("/refreshCall", Behavior({
 		else {
 			myVal = "no current calls";
 			lilo.url = "";
+			stitch.url = ""
 		}
 		message.responseText = JSON.stringify( { value: myVal } );
 		message.status = 200;
