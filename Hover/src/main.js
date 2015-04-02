@@ -52,6 +52,7 @@ var foodImage = new Picture({left:-70, top:35, height: 130,  url: "./full.png"})
 var waterImage = new Picture({right:-110, top:45, height: 140,  url: "./fullCup.png"}),
 
 var callingLabel = new Label({right:0, left:0, height:10, bottom: 10, string: "", style: labelStyle});
+var lilo = new Picture({right:0, left:0, height:100, bottom: 30,  url: ""}),
 
 
 var Screen = Container.template(function($) { return {
@@ -70,7 +71,8 @@ var Screen = Container.template(function($) { return {
 		new Label({right: 15, top:2, height:80, string:"Coffee:", style: labelStyle}), 
 		counterLabel,
 		waterCounterLabel,
-		callingLabel
+		callingLabel,
+		lilo,
 	]
 }});
 
@@ -155,6 +157,7 @@ Handler.bind("/hoverData", {
 				callingLabel.string = "";				
 			} 
 			ended = 1;
+			lilo.url = "";
 		}
 		
 		content.state = 1;
@@ -233,6 +236,7 @@ Handler.bind("/answerCall", Behavior({
 		} else {
 			callingLabel.string = "now speaking";
 			callVar = "now speaking";
+			lilo.url = "./lilo.png";
 		}
 		message.responseText = JSON.stringify( { answerResponse: callVar } );
 		message.status = 200;
@@ -244,15 +248,19 @@ Handler.bind("/refreshCall", Behavior({
 	onInvoke: function(handler, message){
 		if(callingLabel.string == "call ended"){
 			myVal = "no current calls";
+			lilo.url = "";
+			
 		}
 		else if(callVar == "now speaking"){
 			myVal = "now speaking";
 		} 
 		else if(callBoolean == 1 && callingLabel.string == "calling..."){
 			myVal = "Stitch is calling";
+			lilo.url = "";
 		}
 		else {
 			myVal = "no current calls";
+			lilo.url = "";
 		}
 		message.responseText = JSON.stringify( { value: myVal } );
 		message.status = 200;
@@ -269,6 +277,7 @@ Handler.bind("/endCall", Behavior({
 		}
 		callBoolean = 0;
 		callingLabel.string = "";
+		lilo.url = "";
 		message.responseText = JSON.stringify( { endVal: newValue } );
 		message.status = 200;
 	}
@@ -280,6 +289,7 @@ Handler.bind("/callStitch", Behavior({
 		callingLabel.string = "now speaking";
 		callVar = "now speaking";
 		recievedCall = "now speaking"
+		lilo.url = "./lilo.png";
 		message.responseText = JSON.stringify( { stitchResponse : recievedCall} );
 		message.status = 200;
 	}
