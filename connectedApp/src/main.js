@@ -158,6 +158,8 @@ var RefreshCallButton = BUTTONS.Button.template(function($){ return{
 			callResponseLabel.string = json.value;
 			if(callResponseLabel.string == "now speaking" || callResponseLabel.string == "Stitch is calling"){
 				stitch.url = "./stitch.png";
+			} else {
+				stitch.url = "";
 			}
 		}}
 	})
